@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>スキンケア判定ツール</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px 20px;
+      background-color: #f7fafc;
+    }
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: inline-block;
+      max-width: 400px;
+    }
+    h1 { color: #2d3748; font-size: 20px; }
+    p { color: #4a5568; line-height: 1.6; }
+    .badge {
+      display: inline-block;
+      background: #e2e8f0;
+      color: #2d3748;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <span class="badge">環境構築完了</span>
+    <h1>スキンケア判定ツール</h1>
+    <p>iPadからのファイル作成とWeb公開テストに成功しました！<br>次から本番のデータ・判定ロジックを作成していきます。</p>
+  </div>
+</body>
+</html>
