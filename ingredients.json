@@ -1,0 +1,38 @@
+[
+  {
+    "id": "aha-bha",
+    "name": "AHA・BHA（角質ケア成分）",
+    "category": "peeling",
+    "suitable_time": "night_only",
+    "sunburn_risk": true,
+    "target_concerns": ["pores"],
+    "short_desc": "古い角質をやわらげる成分。肌が敏感になりやすいため夜の使用が基本です。"
+  },
+  {
+    "id": "niacinamide",
+    "name": "ナイアシンアミド",
+    "category": "active",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["pores", "brightening", "aging"],
+    "short_desc": "肌のバリア機能をサポートし、マルチにケアできる穏やかな成分です。"
+  },
+  {
+    "id": "retinol",
+    "name": "レチノール",
+    "category": "active",
+    "suitable_time": "night_only",
+    "sunburn_risk": true,
+    "target_concerns": ["pores", "aging"],
+    "short_desc": "ターンオーバーに寄り添う代表成分。紫外線や刺激に配慮し夜の使用が推奨されます。"
+  },
+  {
+    "id": "vitamin-c-pure",
+    "name": "ピュアビタミンC（アスコルビン酸）",
+    "category": "active",
+    "suitable_time": "day_recommended",
+    "sunburn_risk": false,
+    "target_concerns": ["pores", "brightening"],
+    "short_desc": "整肌・抗酸化ケアに優れた成分。日中の紫外線ダメージ対策として朝の使用も人気です。"
+  }
+]
