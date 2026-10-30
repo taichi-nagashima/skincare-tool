@@ -5,8 +5,134 @@
     "level": 3,
     "applies_to": "same_slot",
     "title": "ピーリング成分とレチノールの同時併用",
-    "risk_summary": "角質ケア成分とターンオーバーを促す成分を同時に塗布すると、刺激や皮むけのリスクが高まります。",
-    "advice": "朝と夜で使い分けるか、日を分けて交互に使用することをおすすめします。"
+    "risk_summary": "角質をやわらげる酸とレチノールを同時に重ねると、バリア機能が低下し強い刺激や皮むけ・赤みのリスクが高まります。",
+    "advice": "同じ時間帯の重ね塗りは避け、使用日を分けて交互に取り入れてください。"
+  },
+  {
+    "id": "RULE_AHA_BPO",
+    "pair": ["aha-bha", "benzoyl-peroxide"],
+    "level": 3,
+    "applies_to": "same_slot",
+    "title": "ピーリング成分と過酸化ベンゾイルの同時併用",
+    "risk_summary": "どちらも角質への作用が強く、同時使用により過度な乾燥や皮むけ・ヒリつきを引き起こすリスクがあります。",
+    "advice": "同時使用は控え、肌の状態を見ながら別々の日に分けて使用してください。"
+  },
+  {
+    "id": "RULE_AHA_HYDROQUINONE",
+    "pair": ["aha-bha", "hydroquinone"],
+    "level": 3,
+    "applies_to": "same_slot",
+    "title": "ピーリング成分とハイドロキノンの同時併用",
+    "risk_summary": "角質ケア直後の無防備な肌にハイドロキノンを重ねると、成分が浸透しすぎて強い赤みや刺激につながる恐れがあります。",
+    "advice": "ピーリングを行う日はハイドロキノンの使用をお休みするなど、日を分けて使用してください。"
+  },
+  {
+    "id": "RULE_BPO_RETINOL",
+    "pair": ["benzoyl-peroxide", "retinol"],
+    "level": 3,
+    "applies_to": "same_slot",
+    "title": "過酸化ベンゾイルとレチノールの同時併用",
+    "risk_summary": "過酸化ベンゾイルの酸化作用によりレチノールが分解されやすくなるほか、双方の乾燥・刺激リスクが重なります。",
+    "advice": "同じルーティン内での重ね塗りは避け、使用日を分けるか専門家の指示に従ってください。"
+  },
+  {
+    "id": "RULE_BPO_HYDROQUINONE",
+    "pair": ["benzoyl-peroxide", "hydroquinone"],
+    "level": 3,
+    "applies_to": "same_slot",
+    "title": "過酸化ベンゾイルとハイドロキノンの同時併用",
+    "risk_summary": "化学反応により肌や衣類に一時的な着色が生じる可能性があり、肌への乾燥・刺激も強まりやすい組み合わせです。",
+    "advice": "同じタイミングでの併用は避け、別々の時期や部位に分けて使用してください。"
+  },
+  {
+    "id": "RULE_HYDROQUINONE_RETINOL",
+    "pair": ["hydroquinone", "retinol"],
+    "level": 3,
+    "applies_to": "same_slot",
+    "title": "ハイドロキノンとレチノールの自己判断での重ね塗り",
+    "risk_summary": "どちらも肌への刺激が出やすい高機能成分のため、同時に重ねると強い赤みや皮むけが生じるリスクが高まります。",
+    "advice": "セルフケアでの同時塗布は控え、セラミドなどの保湿成分をはさむか使用日を分けてください。"
+  },
+  {
+    "id": "RULE_BPO_VITC_PURE",
+    "pair": ["benzoyl-peroxide", "vitamin-c-pure"],
+    "level": 3,
+    "applies_to": "same_slot",
+    "title": "過酸化ベンゾイルとピュアビタミンCの同時併用",
+    "risk_summary": "過酸化ベンゾイルの酸化作用とビタミンCの抗酸化作用が互いに打ち消し合い、本来の働きが損なわれます。",
+    "advice": "朝にビタミンC、夜に過酸化ベンゾイルといった形で時間帯を完全に分けて使用してください。"
+  },
+  {
+    "id": "RULE_AHA_VITC_PURE",
+    "pair": ["aha-bha", "vitamin-c-pure"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "ピーリング成分とピュアビタミンCの酸性重ね塗り",
+    "risk_summary": "どちらもpHが低い（酸性）ため、同時に重ねると肌へのピリピリ感や乾燥を感じやすくなる場合があります。",
+    "advice": "朝にピュアビタミンC、夜にAHA・BHAと時間帯を分けて使うときれいに使い分けられます。"
+  },
+  {
+    "id": "RULE_AHA_AZELAIC",
+    "pair": ["aha-bha", "azelaic-acid"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "ピーリング成分とアゼライン酸の同時使用",
+    "risk_summary": "角質ケア作用が重なることで、肌質によっては乾燥や一時的な刺激感を覚えることがあります。",
+    "advice": "朝にアゼライン酸、夜にAHA・BHAと分けるか、保湿クリームをしっかり併用してください。"
+  },
+  {
+    "id": "RULE_AHA_EGF",
+    "pair": ["aha-bha", "egf-fgf"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "酸性ピーリング成分とEGF・FGFの併用",
+    "risk_summary": "タンパク質由来のEGF・FGFは、強い酸性の環境下では構造が変化し本来の整肌サポート力が低下しやすくなります。",
+    "advice": "時間を空けて肌表面のpHが落ち着いてから塗るか、朝と夜で分けて使用するのがおすすめです。"
+  },
+  {
+    "id": "RULE_AHA_PEPTIDE",
+    "pair": ["aha-bha", "peptide-matrixyl"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "酸性ピーリング成分とペプチドの併用",
+    "risk_summary": "低pHの角質ケア酸とペプチドを直後に重ねると、ペプチドの働きが十分に発揮されにくくなる場合があります。",
+    "advice": "朝にペプチド、夜にAHA・BHAと使い分けると双方の良さを活かせます。"
+  },
+  {
+    "id": "RULE_AHA_PHA",
+    "pair": ["aha-bha", "pha"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "角質ケア成分同士（AHA・BHAとPHA）の重複",
+    "risk_summary": "マイルドなPHAであっても、AHA・BHAと同時に使うと角質ケアが過剰になり乾燥しやすくなります。",
+    "advice": "どちらか1つのみに絞るか、肌の状態に合わせて別々の日に使用してください。"
+  },
+  {
+    "id": "RULE_AZELAIC_RETINOL",
+    "pair": ["azelaic-acid", "retinol"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "アゼライン酸とレチノールの重ね塗り",
+    "risk_summary": "併用自体は可能ですが、高濃度製品同士を重ねると乾燥や皮むけが出やすくなる場合があります。",
+    "advice": "最初は朝にアゼライン酸、夜にレチノールと時間帯を分けて取り入れるのが安心です。"
+  },
+  {
+    "id": "RULE_EGF_VITC_PURE",
+    "pair": ["egf-fgf", "vitamin-c-pure"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "EGF・FGFとピュアビタミンCの併用",
+    "risk_summary": "強酸性のピュアビタミンCとEGF・FGFを直後に重ねると、EGF・FGFがなじみにくくなることがあります。",
+    "advice": "塗布の間隔を5〜10分ほど空けるか、穏やかなビタミンC誘導体への置き換え・朝夜の使い分けを検討してください。"
+  },
+  {
+    "id": "RULE_PEPTIDE_VITC_PURE",
+    "pair": ["peptide-matrixyl", "vitamin-c-pure"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "ペプチドと高濃度ピュアビタミンCの併用",
+    "risk_summary": "酸性度の高いピュアビタミンCとペプチドを同時に重ねると、ペプチドの安定性に影響する場合があります。",
+    "advice": "数分置いてなじませてから重ねるか、朝ビタミンC・夜ペプチドと分けるのがおすすめです。"
   },
   {
     "id": "RULE_NIACIN_VITC",
@@ -14,16 +140,61 @@
     "level": 2,
     "applies_to": "same_slot",
     "title": "ナイアシンアミドとピュアビタミンCの重ね塗り",
-    "risk_summary": "高濃度の組み合わせや酸性度により、一時的に肌に赤みや刺激を感じやすくなる場合があります。",
-    "advice": "塗布の間隔を数分空けるか、朝と夜に分けて使用するのがおすすめです。"
+    "risk_summary": "高濃度の組み合わせやpHの差により、敏感な肌では一時的に赤みやピリピリ感を感じやすくなる場合があります。",
+    "advice": "塗布の間隔を数分空けて重ねるか、朝と夜に分けて使用すると快適に取り入れられます。"
+  },
+  {
+    "id": "RULE_PHA_RETINOL",
+    "pair": ["pha", "retinol"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "PHA（角質ケア）とレチノールの同時塗布",
+    "risk_summary": "PHAは穏やかですが、レチノール使い始めの時期に重ねると乾燥や刺激を感じる場合があります。",
+    "advice": "朝にPHA、夜にレチノールと分けるか、セラミド等でしっかり保湿を行ってください。"
+  },
+  {
+    "id": "RULE_RETINOL_VITC_PURE",
+    "pair": ["retinol", "vitamin-c-pure"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "レチノールとピュアビタミンCの同時塗布",
+    "risk_summary": "最適なpH環境が異なり、高濃度同士を一度に重ねると肌への刺激や乾燥が出やすくなります。",
+    "advice": "朝にピュアビタミンC、夜にレチノールと時間帯を分けて使うのが王道のルーティンです。"
+  },
+  {
+    "id": "RULE_VITC_DERIV_PURE",
+    "pair": ["vitamin-c-derivative", "vitamin-c-pure"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "ビタミンC成分同士の重複重ね塗り",
+    "risk_summary": "同系統の成分を重ねることで皮脂が抑えられすぎ、肌質によっては乾燥やつっぱり感を感じる場合があります。",
+    "advice": "1回のルーティンではどちらか1種類に絞り、ヒアルロン酸やセラミドで保湿を補ってください。"
   },
   {
     "id": "RULE_RETINOL_VITC_CROSS",
     "pair": ["retinol", "vitamin-c-pure"],
     "level": 1,
     "applies_to": "cross_slot",
-    "title": "朝ビタミンC × 夜レチノールの使い分け",
-    "risk_summary": "朝にビタミンCで紫外線対策をサポートし、夜にレチノールでケアする相性の良い分散パターンです。",
+    "title": "朝ピュアビタミンC × 夜レチノールの使い分け",
+    "risk_summary": "朝にビタミンCで日中の乾燥ダメージをケアし、夜にレチノールでハリを養う相性の良い分散パターンです。",
     "advice": "同じタイミングで重ね塗りせず、朝夜で分けて使用する理想的なルーティンです。"
+  },
+  {
+    "id": "RULE_AHA_RETINOL_CROSS",
+    "pair": ["aha-bha", "retinol"],
+    "level": 2,
+    "applies_to": "cross_slot",
+    "title": "同日中（朝・夜）でのピーリング成分とレチノールの併用",
+    "risk_summary": "時間帯を分けても、同じ日に角質ケアとレチノールを両方行うと肌が敏感になり乾燥しやすくなります。",
+    "advice": "ピーリングは週1〜2回のスペシャルケアとし、その日の夜はレチノールをお休みして保湿中心にするのが安心です。"
+  },
+  {
+    "id": "RULE_BPO_VITC_CROSS",
+    "pair": ["benzoyl-peroxide", "vitamin-c-pure"],
+    "level": 1,
+    "applies_to": "cross_slot",
+    "title": "朝ピュアビタミンC × 夜過酸化ベンゾイルの使い分け",
+    "risk_summary": "時間帯を朝と夜に分けることで、互いの成分が干渉せずそれぞれの良さを活かしてケアできます。",
+    "advice": "乾燥を防ぐため、どちらの時間帯もセラミドやヘパリン類似物質などの保湿ケアを併用してください。"
   }
 ]
