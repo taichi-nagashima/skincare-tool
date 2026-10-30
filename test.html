@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>データ整合性 自動検証レポート</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 24px 16px;
+      background-color: #f8fafc;
+      color: #1e293b;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    h1 { font-size: 20px; margin-bottom: 8px; }
+    .summary {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .summary.all-pass { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .summary.has-fail { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .test-card {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border-left: 5px solid #cbd5e1;
+    }
+    .test-card.pass { border-left-color: #22c55e; }
+    .test-card.fail { border-left-color: #ef4444; }
+    .test-title { font-weight: bold; font-size: 15px; margin-bottom: 6px; }
+    .test-desc { font-size: 13px; color: #64748b; margin-bottom: 8px; }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    .status-badge.pass { background-color: #22c55e; }
+    .status-badge.fail { background-color: #ef4444; }
+    .error-log {
+      background: #fef2f2;
+      color: #b91c1c;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-top: 8px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>データ整合性 自動検証レポート</h1>
+  <div id="summary-area" class="summary">検証スクリプトを実行中...</div>
+  <div id="test-results"></div>
+
+  <script>
+    const NG_WORDS = ["治る", "治療", "改善する", "予防する", "絶対に", "必ず", "完治", "特効薬"];
+
+    async function runTests() {
+      const resultsContainer = document.getElementById("test-results");
+      const summaryArea = document.getElementById("summary-area");
+      let allPassed = true;
+
+      function renderTestResult(title, desc, isPass, errors = []) {
+        if (!isPass) allPassed = false;
+        const card = document.createElement("div");
+        card.className = `test-card ${isPass ? "pass" : "fail"}`;
+        
+        let errorHtml = "";
+        if (errors.length > 0) {
+          errorHtml = `<div class="error-log">${errors.join("\n")}</div>`;
+        }
+
+        card.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="test-title">${title}</div>
+            <span class="status-badge ${isPass ? "pass" : "fail"}">${isPass ? "PASS" : "FAIL"}</span>
+          </div>
+          <div class="test-desc">${desc}</div>
+          ${errorHtml}
+        `;
+        resultsContainer.appendChild(card);
+      }
+
+      try {
+        const [concernsRes, ingredientsRes, rulesRes] = await Promise.all([
+          fetch("./concerns.json"),
+          fetch("./ingredients.json"),
+          fetch("./rules.json")
+        ]);
+
+        const concerns = await concernsRes.json();
+        const ingredients = await ingredientsRes.json();
+        const rules = await rulesRes.json();
+
+        const concernIds = new Set(concerns.map(c => c.id));
+        const ingredientIds = new Set(ingredients.map(i => i.id));
+
+        // 1. 参照整合性チェック（rules -> ingredients）
+        const ruleIdErrors = [];
+        rules.forEach(rule => {
+          rule.pair.forEach(id => {
+            if (!ingredientIds.has(id)) {
+              ruleIdErrors.push(`[ルールID: ${rule.id}] 未定義の成分ID "${id}" が参照されています`);
+            }
+          });
+        });
+        renderTestResult(
+          "1. 参照整合性チェック（成分ID実在検証）",
+          "rules.json の各ルールに指定されたペア成分が、ingredients.json に実在することを確認します。",
+          ruleIdErrors.length === 0,
+          ruleIdErrors
+        );
+
+        // 2. ペア正規化チェック（アルファベット昇順ソート）
+        const pairOrderErrors = [];
+        rules.forEach(rule => {
+          if (rule.pair.length !== 2) {
+            pairOrderErrors.push(`[ルールID: ${rule.id}] pair配列の要素数は2である必要があります（現在: ${rule.pair.length}）`);
+          } else if (rule.pair[0] >= rule.pair[1]) {
+            pairOrderErrors.push(`[ルールID: ${rule.id}] pair "${rule.pair[0]}" と "${rule.pair[1]}" がアルファベット昇順になっていません（正: ["${rule.pair[1]}", "${rule.pair[0]}"]）`);
+          }
+        });
+        renderTestResult(
+          "2. ペア正規化チェック（アルファベット昇順）",
+          "ルール照合のブレを防ぐため、pair配列が辞書順で正しく並んでいることを確認します。",
+          pairOrderErrors.length === 0,
+          pairOrderErrors
+        );
+
+        // 3. お悩み紐付け整合性チェック（ingredients -> concerns）
+        const concernLinkErrors = [];
+        ingredients.forEach(item => {
+          item.target_concerns.forEach(cId => {
+            if (!concernIds.has(cId)) {
+              concernLinkErrors.push(`[成分ID: ${item.id}] 未定義のお悩みID "${cId}" が参照されています`);
+            }
+          });
+        });
+        renderTestResult(
+          "3. お悩みID参照整合性チェック",
+          "ingredients.json の target_concerns に指定されたお悩みIDが、concerns.json に実在することを確認します。",
+          concernLinkErrors.length === 0,
+          concernLinkErrors
+        );
+
+        // 4. 薬機法NGワード検査
+        const complianceErrors = [];
+        const checkText = (text, location) => {
+          NG_WORDS.forEach(word => {
+            if (text && text.includes(word)) {
+              complianceErrors.push(`[${location}] 禁止ワード "${word}" が検出されました: "${text}"`);
+            }
+          });
+        };
+
+        concerns.forEach(c => checkText(c.description, `お悩み: ${c.name}`));
+        ingredients.forEach(i => checkText(i.short_desc, `成分: ${i.name}`));
+        rules.forEach(r => {
+          checkText(r.risk_summary, `ルール: ${r.title} (リスク)`);
+          checkText(r.advice, `ルール: ${r.title} (アドバイス)`);
+        });
+
+        renderTestResult(
+          "4. 薬機法・コンプライアンスNGワード検査",
+          `禁止表現（${NG_WORDS.join("、")}）がデータ内に含まれていないことを確認します。`,
+          complianceErrors.length === 0,
+          complianceErrors
+        );
+
+        // サマリー表示の更新
+        if (allPassed) {
+          summaryArea.className = "summary all-pass";
+          summaryArea.textContent = "✅ すべての自動検証を通過しました（100% PASS - ゼロ・ディフェクト）";
+        } else {
+          summaryArea.className = "summary has-fail";
+          summaryArea.textContent = "⚠️ 検証エラーが検出されました。エラー内容を確認してください。";
+        }
+
+      } catch (e) {
+        summaryArea.className = "summary has-fail";
+        summaryArea.textContent = `🚨 JSONファイルの読み込みに失敗しました: ${e.message}`;
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", runTests);
+  </script>
+</body>
+</html>
