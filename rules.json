@@ -1,0 +1,29 @@
+[
+  {
+    "id": "RULE_AHA_RETINOL",
+    "pair": ["aha-bha", "retinol"],
+    "level": 3,
+    "applies_to": "same_slot",
+    "title": "ピーリング成分とレチノールの同時併用",
+    "risk_summary": "角質ケア成分とターンオーバーを促す成分を同時に塗布すると、刺激や皮むけのリスクが高まります。",
+    "advice": "朝と夜で使い分けるか、日を分けて交互に使用することをおすすめします。"
+  },
+  {
+    "id": "RULE_NIACIN_VITC",
+    "pair": ["niacinamide", "vitamin-c-pure"],
+    "level": 2,
+    "applies_to": "same_slot",
+    "title": "ナイアシンアミドとピュアビタミンCの重ね塗り",
+    "risk_summary": "高濃度の組み合わせや酸性度により、一時的に肌に赤みや刺激を感じやすくなる場合があります。",
+    "advice": "塗布の間隔を数分空けるか、朝と夜に分けて使用するのがおすすめです。"
+  },
+  {
+    "id": "RULE_RETINOL_VITC_CROSS",
+    "pair": ["retinol", "vitamin-c-pure"],
+    "level": 1,
+    "applies_to": "cross_slot",
+    "title": "朝ビタミンC × 夜レチノールの使い分け",
+    "risk_summary": "朝にビタミンCで紫外線対策をサポートし、夜にレチノールでケアする相性の良い分散パターンです。",
+    "advice": "同じタイミングで重ね塗りせず、朝夜で分けて使用する理想的なルーティンです。"
+  }
+]
