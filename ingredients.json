@@ -1,12 +1,183 @@
 [
   {
     "id": "aha-bha",
-    "name": "AHA・BHA（角質ケア成分）",
+    "name": "AHA・BHA（角質ケア酸）",
     "category": "peeling",
     "suitable_time": "night_only",
     "sunburn_risk": true,
-    "target_concerns": ["pores"],
-    "short_desc": "古い角質をやわらげる成分。肌が敏感になりやすいため夜の使用が基本です。"
+    "target_concerns": ["pores", "acne", "brightening"],
+    "short_desc": "グリコール酸やサリチル酸など古い角質をやわらげる成分。使用後は紫外線の影響を受けやすいため夜の使用が基本です。"
+  },
+  {
+    "id": "allantoin",
+    "name": "アラントイン",
+    "category": "soothing",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["sensitive", "acne"],
+    "short_desc": "肌荒れを防ぎ、敏感に傾きやすい肌を穏やかに整える整肌成分です。"
+  },
+  {
+    "id": "arbutin",
+    "name": "アルブチン",
+    "category": "brightening",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["brightening"],
+    "short_desc": "メラニンの生成を抑え、シミ・そばかすを防ぐ代表的なブライトニング成分です。"
+  },
+  {
+    "id": "astaxanthin",
+    "name": "アスタキサンチン",
+    "category": "antioxidant",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["aging", "firmness", "brightening"],
+    "short_desc": "赤い天然色素由来の整肌成分。乾燥などの外的ダメージから肌を守り、ハリとツヤを与えます。"
+  },
+  {
+    "id": "azelaic-acid",
+    "name": "アゼライン酸",
+    "category": "active",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["pores", "acne", "brightening"],
+    "short_desc": "皮脂バランスやキメを整える成分。高濃度の場合は乾燥やピリピリ感に配慮して保湿と併用します。"
+  },
+  {
+    "id": "bakuchiol",
+    "name": "バクチオール",
+    "category": "active",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["aging", "firmness", "pores"],
+    "short_desc": "植物由来のエイジングケア成分。レチノールに似た働きを持ちながら刺激が少なく、朝夜問わず使用できます。"
+  },
+  {
+    "id": "benzoyl-peroxide",
+    "name": "過酸化ベンゾイル（BPO）",
+    "category": "active",
+    "suitable_time": "night_only",
+    "sunburn_risk": true,
+    "target_concerns": ["acne"],
+    "short_desc": "角質をやわらげ肌を清潔に保つ成分。強い酸化作用と乾燥・紫外線への配慮から夜の使用が推奨されます。"
+  },
+  {
+    "id": "ceramide",
+    "name": "セラミド",
+    "category": "moisturizer",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["dryness", "sensitive", "aging"],
+    "short_desc": "角質層のうるおいバリアをサポートする必須保湿成分。刺激のある攻めの成分の緩衝役としても優秀です。"
+  },
+  {
+    "id": "cica",
+    "name": "CICA（ツボクサエキス）",
+    "category": "soothing",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["sensitive", "acne", "dryness"],
+    "short_desc": "乾燥やキメの乱れによる肌荒れを防ぎ、うるおいを与えてすこやかに保つ植物由来成分です。"
+  },
+  {
+    "id": "coenzyme-q10",
+    "name": "コエンザイムQ10",
+    "category": "antioxidant",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["aging", "firmness", "dryness"],
+    "short_desc": "年齢とともに減少するうるおいとハリを補い、乾燥小ジワを目立たなくするエイジングケア成分です。"
+  },
+  {
+    "id": "collagen",
+    "name": "コラーゲン",
+    "category": "moisturizer",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["dryness", "firmness"],
+    "short_desc": "肌表面にうるおいのヴェールを作り、乾燥を防いでみずみずしい弾力感を与える保湿成分です。"
+  },
+  {
+    "id": "egf-fgf",
+    "name": "EGF・FGF（整肌ペプチド）",
+    "category": "peptide",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["aging", "firmness"],
+    "short_desc": "キメを整えハリを与えるタンパク質由来の整肌成分。強い酸性の環境下では働きが弱まる性質があります。"
+  },
+  {
+    "id": "ferulic-acid",
+    "name": "フェルラ酸",
+    "category": "antioxidant",
+    "suitable_time": "day_recommended",
+    "sunburn_risk": false,
+    "target_concerns": ["brightening", "aging"],
+    "short_desc": "米ぬか等に含まれる整肌成分。ビタミンCやEと相性が良く、日中の乾燥ダメージから肌を守ります。"
+  },
+  {
+    "id": "fullerene",
+    "name": "フラーレン",
+    "category": "antioxidant",
+    "suitable_time": "day_recommended",
+    "sunburn_risk": false,
+    "target_concerns": ["pores", "brightening", "aging"],
+    "short_desc": "日中の紫外線や乾燥による肌ダメージをケアし、キメと透明感を保つ整肌成分です。"
+  },
+  {
+    "id": "glutathione",
+    "name": "グルタチオン",
+    "category": "antioxidant",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["brightening", "firmness"],
+    "short_desc": "3つのアミノ酸から成る整肌成分。くすみがちな肌にうるおいを与え、白玉のようなツヤ肌へ導きます。"
+  },
+  {
+    "id": "glycyrrhizinate",
+    "name": "グリチルリチン酸2K",
+    "category": "soothing",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["sensitive", "acne"],
+    "short_desc": "甘草根由来の代表的な肌荒れ防止成分。ニキビや肌荒れを防ぎ、他の成分とも幅広く併用できます。"
+  },
+  {
+    "id": "heparinoid",
+    "name": "ヘパリン類似物質",
+    "category": "moisturizer",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["dryness", "sensitive"],
+    "short_desc": "高い保水力で角質層のすみずみまでうるおいを巡らせ、乾燥による荒れを防ぐ高保湿成分です。"
+  },
+  {
+    "id": "hyaluronic-acid",
+    "name": "ヒアルロン酸",
+    "category": "moisturizer",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["dryness", "firmness"],
+    "short_desc": "1gで多くの水分を抱え込む代表的な保湿成分。あらゆる成分と相性が良く、刺激の緩和にも役立ちます。"
+  },
+  {
+    "id": "hydroquinone",
+    "name": "ハイドロキノン",
+    "category": "brightening",
+    "suitable_time": "night_only",
+    "sunburn_risk": true,
+    "target_concerns": ["brightening"],
+    "short_desc": "集中的なポイントケアに使われる整肌成分。紫外線の影響を受けやすく刺激も強いため夜のみの使用が基本です。"
+  },
+  {
+    "id": "kojic-acid",
+    "name": "コウジ酸",
+    "category": "brightening",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["brightening"],
+    "short_desc": "発酵由来のブライトニング成分。メラニンの生成を抑え、シミ・そばかすを防いで透明感を保ちます。"
   },
   {
     "id": "niacinamide",
@@ -14,8 +185,35 @@
     "category": "active",
     "suitable_time": "all",
     "sunburn_risk": false,
-    "target_concerns": ["pores", "brightening", "aging"],
-    "short_desc": "肌のバリア機能をサポートし、マルチにケアできる穏やかな成分です。"
+    "target_concerns": ["pores", "brightening", "aging", "dryness"],
+    "short_desc": "うるおいバリアをサポートし、ハリ・透明感・キメをマルチにケアできる穏やかなビタミンB群成分です。"
+  },
+  {
+    "id": "panthenol",
+    "name": "パンテノール（プロビタミンB5）",
+    "category": "soothing",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["sensitive", "dryness"],
+    "short_desc": "肌になじみやすく、うるおいを保って肌荒れを防ぐ保湿・整肌成分です。"
+  },
+  {
+    "id": "peptide-matrixyl",
+    "name": "ペプチド（マトリキシル等）",
+    "category": "peptide",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["aging", "firmness", "dryness"],
+    "short_desc": "アミノ酸が結合したハリ・弾力ケア成分。強酸性のアイテムと重ねると働きが落ちる場合があります。"
+  },
+  {
+    "id": "pha",
+    "name": "PHA（次世代マイルド角質ケア）",
+    "category": "peeling",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["pores", "dryness", "brightening"],
+    "short_desc": "分子が大きく保湿力も兼ね備えた穏やかな角質ケア成分。AHAに比べ刺激が少ないのが特徴です。"
   },
   {
     "id": "retinol",
@@ -23,8 +221,26 @@
     "category": "active",
     "suitable_time": "night_only",
     "sunburn_risk": true,
-    "target_concerns": ["pores", "aging"],
-    "short_desc": "ターンオーバーに寄り添う代表成分。紫外線や刺激に配慮し夜の使用が推奨されます。"
+    "target_concerns": ["pores", "aging", "firmness"],
+    "short_desc": "ハリ・ツヤ・キメに寄り添うビタミンA成分。光や熱に弱くA反応（皮むけ等）に配慮し夜の使用が推奨されます。"
+  },
+  {
+    "id": "tranexamic-acid",
+    "name": "トラネキサム酸",
+    "category": "brightening",
+    "suitable_time": "all",
+    "sunburn_risk": false,
+    "target_concerns": ["brightening", "sensitive"],
+    "short_desc": "肌荒れを防ぎながらメラニンの生成を抑えるアミノ酸誘導体。穏やかな使用感で他成分とも合わせやすい成分です。"
+  },
+  {
+    "id": "vitamin-c-derivative",
+    "name": "ビタミンC誘導体",
+    "category": "active",
+    "suitable_time": "day_recommended",
+    "sunburn_risk": false,
+    "target_concerns": ["pores", "brightening", "acne"],
+    "short_desc": "ピュアビタミンCの安定性を高めた成分。穏やかに角質層へ浸透し、毛穴周りやキメを整えます。"
   },
   {
     "id": "vitamin-c-pure",
@@ -32,7 +248,7 @@
     "category": "active",
     "suitable_time": "day_recommended",
     "sunburn_risk": false,
-    "target_concerns": ["pores", "brightening"],
-    "short_desc": "整肌・抗酸化ケアに優れた成分。日中の紫外線ダメージ対策として朝の使用も人気です。"
+    "target_concerns": ["pores", "brightening", "aging"],
+    "short_desc": "即効性とマルチな整肌力を持つ成分。酸性度が高いため、敏感肌や高濃度製品の重ね塗り時は刺激に注意します。"
   }
 ]
