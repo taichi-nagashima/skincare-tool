@@ -3,40 +3,658 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>スキンケア判定ツール</title>
+  <title>スキンケア成分 併用相性・リスク判定ツール</title>
   <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --subtext: #64748b;
+      --border: #e2e8f0;
+      --primary: #0f172a;
+      --accent: #3b82f6;
+      --lv3-bg: #fef2f2; --lv3-border: #f87171; --lv3-text: #991b1b;
+      --lv2-bg: #fffbeb; --lv2-border: #fbbf24; --lv2-text: #92400e;
+      --lv1-bg: #f0fdf4; --lv1-border: #4ade80; --lv1-text: #166534;
+    }
+    * { box-sizing: border-box; }
     body {
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0 0 90px 0;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
       text-align: center;
-      padding: 50px 20px;
-      background-color: #f7fafc;
     }
-    .box {
-      background: white;
-      padding: 30px;
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--primary);
+    }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      display: inline-block;
-      max-width: 400px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
-    h1 { color: #2d3748; font-size: 20px; }
-    p { color: #4a5568; line-height: 1.6; }
-    .badge {
-      display: inline-block;
-      background: #e2e8f0;
-      color: #2d3748;
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 14px;
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 15px;
       font-weight: bold;
+      margin: 0;
+    }
+    .section-note {
+      font-size: 12px;
+      color: var(--subtext);
+    }
+    /* タグ・チップ共通 */
+    .chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .chip.selected {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      font-weight: bold;
+    }
+    .chip:disabled, .chip.disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    /* 成分追加ポップアップパネル */
+    .action-drawer {
+      margin-top: 12px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+    .drawer-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .drawer-desc {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-bottom: 12px;
+    }
+    .drawer-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+    .btn-morning {
+      background: #fff7ed;
+      color: #c2410c;
+      border-color: #fdba74;
+    }
+    .btn-night {
+      background: #eef2ff;
+      color: #3730a3;
+      border-color: #a5b4fc;
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #e2e8f0;
+      color: #64748b;
+      border-color: #cbd5e1;
+    }
+    .btn-reset {
+      background: transparent;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    /* ルーティン枠 */
+    .routine-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 560px) {
+      .routine-grid { grid-template-columns: 1fr; }
+    }
+    .slot-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fcfcfd;
+      min-height: 90px;
+    }
+    .slot-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .slot-limit-msg {
+      font-size: 11px;
+      color: #dc2626;
+      margin-top: 6px;
+      font-weight: bold;
+    }
+    .slot-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin: 0 6px 6px 0;
+    }
+    .slot-tag button {
+      border: none;
+      background: #e2e8f0;
+      color: #475569;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 11px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+    /* 判定結果エリア */
+    .guide-box {
+      text-align: center;
+      padding: 20px 12px;
+      color: var(--subtext);
+      font-size: 13px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px dashed #cbd5e1;
+    }
+    .summary-banner {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 14px;
+      border: 1px solid transparent;
+    }
+    .summary-lv3 { background: var(--lv3-bg); border-color: var(--lv3-border); color: var(--lv3-text); }
+    .summary-lv2 { background: var(--lv2-bg); border-color: var(--lv2-border); color: var(--lv2-text); }
+    .summary-lv1 { background: var(--lv1-bg); border-color: var(--lv1-border); color: var(--lv1-text); }
+
+    .result-card {
+      border: 1px solid var(--border);
+      border-left-width: 5px;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      background: #ffffff;
+    }
+    .result-card.lv3 { border-left-color: #ef4444; }
+    .result-card.lv2 { border-left-color: #f59e0b; }
+    .result-card.lv1 { border-left-color: #22c55e; }
+    .result-meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+    .lv-badge {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .lv-badge.lv3 { background: #ef4444; }
+    .lv-badge.lv2 { background: #f59e0b; }
+    .lv-badge.lv1 { background: #22c55e; }
+    .result-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .result-text {
+      font-size: 12px;
+      color: #334155;
+      margin: 4px 0;
+    }
+    /* アコーディオン */
+    .accordion-btn {
+      width: 100%;
+      text-align: left;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--text);
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .accordion-content {
+      margin-top: 10px;
+      display: none;
+    }
+    .accordion-content.open {
+      display: block;
+    }
+    /* 常時表示フッター免責事項 */
+    footer.disclaimer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.96);
+      border-top: 1px solid var(--border);
+      padding: 8px 16px;
+      font-size: 11px;
+      color: var(--subtext);
+      text-align: center;
+      z-index: 100;
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <span class="badge">環境構築完了</span>
-    <h1>スキンケア判定ツール</h1>
-    <p>iPadからのファイル作成とWeb公開テストに成功しました！<br>次から本番のデータ・判定ロジックを作成していきます。</p>
-  </div>
+
+  <header>
+    <h1>スキンケア成分 併用相性・リスク判定ツール</h1>
+  </header>
+
+  <main class="container">
+    <!-- Block 1: お悩み選択 -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">1. お悩みから探す（任意・最大3つ）</h2>
+        <span id="concern-count" class="section-note">0 / 3 選択中</span>
+      </div>
+      <div id="concern-list" class="chip-list"></div>
+    </section>
+
+    <!-- Block 2: 成分プール -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">2. 成分をタップして追加</h2>
+        <span id="ingredient-filter-note" class="section-note">全成分を表示中</span>
+      </div>
+      <div id="ingredient-list" class="chip-list"></div>
+      <div id="ingredient-drawer" class="action-drawer" style="display: none;"></div>
+    </section>
+
+    <!-- Block 3: マイ・ルーティン枠 -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">3. マイ・ルーティン枠</h2>
+        <button id="reset-btn" class="btn-reset" type="button">🗑️ すべてリセット</button>
+      </div>
+      <div class="routine-grid">
+        <div class="slot-box">
+          <div class="slot-header">
+            <span>☀️ 朝のルーティン</span>
+            <span id="morning-count">0 / 5</span>
+          </div>
+          <div id="morning-slot"></div>
+          <div id="morning-limit-msg" class="slot-limit-msg" style="display: none;">※朝枠の上限（5個）に達しています</div>
+        </div>
+        <div class="slot-box">
+          <div class="slot-header">
+            <span>🌙 夜のルーティン</span>
+            <span id="night-count">0 / 5</span>
+          </div>
+          <div id="night-slot"></div>
+          <div id="night-limit-msg" class="slot-limit-msg" style="display: none;">※夜枠の上限（5個）に達しています</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Block 4: 判定結果エリア -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">4. 相性・リスク判定結果</h2>
+      </div>
+      <div id="result-area"></div>
+    </section>
+  </main>
+
+  <footer class="disclaimer">
+    ※本ツールは化粧品成分の一般的な情報提供を目的としており、医師や専門家の診断・指導に代わるものではありません。実際の使用時は各製品の表示に従い、肌に異常が生じた場合は使用を中止してください。
+  </footer>
+
+  <script src="./engine.js"></script>
+  <script>
+    let concernsData = [];
+    let ingredientsData = [];
+    let rulesData = [];
+
+    let selectedConcerns = [];
+    let morningIds = [];
+    let nightIds = [];
+    let activeIngredientId = null;
+    let isSafeAccordionOpen = false;
+
+    async function initApp() {
+      try {
+        const [cRes, iRes, rRes] = await Promise.all([
+          fetch("./concerns.json"),
+          fetch("./ingredients.json"),
+          fetch("./rules.json")
+        ]);
+        concernsData = await cRes.json();
+        ingredientsData = await iRes.json();
+        rulesData = await rRes.json();
+
+        document.getElementById("reset-btn").addEventListener("click", handleReset);
+        renderAll();
+      } catch (err) {
+        document.getElementById("result-area").innerHTML =
+          `<div class="guide-box" style="color:#dc2626;">データの読み込みに失敗しました: ${err.message}</div>`;
+      }
+    }
+
+    function renderAll() {
+      renderConcerns();
+      renderIngredients();
+      renderDrawer();
+      renderRoutineSlots();
+      renderResults();
+    }
+
+    // 1. お悩み描画（最大3個）
+    function renderConcerns() {
+      const container = document.getElementById("concern-list");
+      const countEl = document.getElementById("concern-count");
+      countEl.textContent = `${selectedConcerns.length} / 3 選択中`;
+      container.innerHTML = "";
+
+      const isLimitReached = selectedConcerns.length >= 3;
+
+      concernsData.forEach(c => {
+        const isSelected = selectedConcerns.includes(c.id);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `chip ${isSelected ? "selected" : ""}`;
+        btn.textContent = c.name;
+        btn.disabled = !isSelected && isLimitReached;
+
+        btn.addEventListener("click", () => {
+          if (isSelected) {
+            selectedConcerns = selectedConcerns.filter(id => id !== c.id);
+          } else if (selectedConcerns.length < 3) {
+            selectedConcerns.push(c.id);
+          }
+          renderAll();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    // 2. 成分プール描画（お悩みフィルタ連動）
+    function renderIngredients() {
+      const container = document.getElementById("ingredient-list");
+      const noteEl = document.getElementById("ingredient-filter-note");
+      container.innerHTML = "";
+
+      const filtered = selectedConcerns.length === 0
+        ? ingredientsData
+        : ingredientsData.filter(ing => ing.target_concerns.some(cId => selectedConcerns.includes(cId)));
+
+      noteEl.textContent = selectedConcerns.length === 0
+        ? `全成分を表示中（${filtered.length}種）`
+        : `お悩み該当成分を表示中（${filtered.length}種）`;
+
+      filtered.forEach(ing => {
+        const isSelected = activeIngredientId === ing.id;
+        const inMorning = morningIds.includes(ing.id);
+        const inNight = nightIds.includes(ing.id);
+
+        let badge = "";
+        if (inMorning && inNight) badge = " [☀️🌙]";
+        else if (inMorning) badge = " [☀️]";
+        else if (inNight) badge = " [🌙]";
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `chip ${isSelected ? "selected" : ""}`;
+        btn.textContent = `${ing.name}${badge}`;
+
+        btn.addEventListener("click", () => {
+          activeIngredientId = (activeIngredientId === ing.id) ? null : ing.id;
+          renderAll();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    // 2-2. 成分追加ドロワー（朝・夜追加ボタン）
+    function renderDrawer() {
+      const drawer = document.getElementById("ingredient-drawer");
+      if (!activeIngredientId) {
+        drawer.style.display = "none";
+        return;
+      }
+      const ing = ingredientsData.find(i => i.id === activeIngredientId);
+      if (!ing) {
+        drawer.style.display = "none";
+        return;
+      }
+
+      const inMorning = morningIds.includes(ing.id);
+      const inNight = nightIds.includes(ing.id);
+      const morningFull = morningIds.length >= 5;
+      const nightFull = nightIds.length >= 5;
+
+      const morningBtnText = inMorning ? "☀️ 朝に追加済み" : (morningFull ? "☀️ 朝枠は上限(5個)です" : "☀️ 朝に追加");
+      const nightBtnText = inNight ? "🌙 夜に追加済み" : (nightFull ? "🌙 夜枠は上限(5個)です" : "🌙 夜に追加");
+
+      drawer.style.display = "block";
+      drawer.innerHTML = `
+        <div class="drawer-title">${ing.name}</div>
+        <div class="drawer-desc">${ing.short_desc}</div>
+        <div class="drawer-buttons">
+          <button type="button" id="add-morning-btn" class="btn btn-morning" ${inMorning || morningFull ? "disabled" : ""}>
+            ${morningBtnText}
+          </button>
+          <button type="button" id="add-night-btn" class="btn btn-night" ${inNight || nightFull ? "disabled" : ""}>
+            ${nightBtnText}
+          </button>
+        </div>
+      `;
+
+      document.getElementById("add-morning-btn").addEventListener("click", () => {
+        if (!inMorning && morningIds.length < 5) {
+          morningIds.push(ing.id);
+          renderAll();
+        }
+      });
+
+      document.getElementById("add-night-btn").addEventListener("click", () => {
+        if (!inNight && nightIds.length < 5) {
+          nightIds.push(ing.id);
+          renderAll();
+        }
+      });
+    }
+
+    // 3. ルーティン枠描画
+    function renderRoutineSlots() {
+      const mContainer = document.getElementById("morning-slot");
+      const nContainer = document.getElementById("night-slot");
+      document.getElementById("morning-count").textContent = `${morningIds.length} / 5`;
+      document.getElementById("night-count").textContent = `${nightIds.length} / 5`;
+
+      document.getElementById("morning-limit-msg").style.display = morningIds.length >= 5 ? "block" : "none";
+      document.getElementById("night-limit-msg").style.display = nightIds.length >= 5 ? "block" : "none";
+
+      mContainer.innerHTML = morningIds.length === 0 ? `<span class="section-note">未登録</span>` : "";
+      nContainer.innerHTML = nightIds.length === 0 ? `<span class="section-note">未登録</span>` : "";
+
+      morningIds.forEach(id => {
+        const ing = ingredientsData.find(i => i.id === id);
+        if (!ing) return;
+        const tag = document.createElement("span");
+        tag.className = "slot-tag";
+        tag.innerHTML = `${ing.name} <button type="button" aria-label="削除">×</button>`;
+        tag.querySelector("button").addEventListener("click", () => {
+          morningIds = morningIds.filter(item => item !== id);
+          renderAll();
+        });
+        mContainer.appendChild(tag);
+      });
+
+      nightIds.forEach(id => {
+        const ing = ingredientsData.find(i => i.id === id);
+        if (!ing) return;
+        const tag = document.createElement("span");
+        tag.className = "slot-tag";
+        tag.innerHTML = `${ing.name} <button type="button" aria-label="削除">×</button>`;
+        tag.querySelector("button").addEventListener("click", () => {
+          nightIds = nightIds.filter(item => item !== id);
+          renderAll();
+        });
+        nContainer.appendChild(tag);
+      });
+    }
+
+    // 4. 判定結果描画（State 1〜3 & アコーディオン）
+    function renderResults() {
+      const container = document.getElementById("result-area");
+      const evalResult = evaluateRoutine(morningIds, nightIds, ingredientsData, rulesData);
+
+      // State 1: 0個
+      if (evalResult.uiState === 1) {
+        container.innerHTML = `
+          <div class="guide-box">
+            上の成分リストから成分をタップして、「☀️ 朝に追加」または「🌙 夜に追加」を選択してください。
+          </div>
+        `;
+        return;
+      }
+
+      let html = "";
+
+      // State 2: 1個のみ登録時
+      if (evalResult.uiState === 2) {
+        if (evalResult.warnings.length > 0) {
+          evalResult.warnings.forEach(w => { html += createCardHtml(w); });
+        }
+        html += `
+          <div class="guide-box">
+            現在1つの成分が選択されています。もう1つ成分を追加すると、成分同士の併用相性判定が表示されます。
+          </div>
+        `;
+        container.innerHTML = html;
+        return;
+      }
+
+      // State 3: 2個以上登録時
+      if (evalResult.overallLevel === 3) {
+        html += `<div class="summary-banner summary-lv3">⚠️ Level 3: 併用非推奨の組み合わせが含まれています</div>`;
+      } else if (evalResult.overallLevel === 2) {
+        html += `<div class="summary-banner summary-lv2">⚡ Level 2: 使用方法や時間帯に注意が必要な項目があります</div>`;
+      } else {
+        html += `<div class="summary-banner summary-lv1">✅ Level 1: 現在の組み合わせに特に問題は見当たりません</div>`;
+      }
+
+      // 注意・非推奨カード（常時展開）
+      evalResult.warnings.forEach(w => {
+        html += createCardHtml(w);
+      });
+
+      // Level 1（併用OK）のアコーディオン
+      if (evalResult.safeItems.length > 0) {
+        const icon = isSafeAccordionOpen ? "［ー］" : "［＋］";
+        html += `
+          <button type="button" id="safe-accordion-btn" class="accordion-btn">
+            ${icon} 問題のない組み合わせ（Level 1：${evalResult.safeItems.length}件）を表示
+          </button>
+          <div id="safe-accordion-content" class="accordion-content ${isSafeAccordionOpen ? "open" : ""}">
+            ${evalResult.safeItems.map(item => createCardHtml(item)).join("")}
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+
+      const accBtn = document.getElementById("safe-accordion-btn");
+      if (accBtn) {
+        accBtn.addEventListener("click", () => {
+          isSafeAccordionOpen = !isSafeAccordionOpen;
+          renderResults();
+        });
+      }
+    }
+
+    function createCardHtml(item) {
+      const lvLabel = item.level === 3 ? "Level 3: 併用非推奨" : (item.level === 2 ? "Level 2: 注意" : "Level 1: 併用OK");
+      return `
+        <div class="result-card lv${item.level}">
+          <div class="result-meta">
+            <span class="lv-badge lv${item.level}">${lvLabel}</span>
+            <span>${item.slotLabel}</span>
+          </div>
+          <div class="result-title">${item.title}</div>
+          <div class="result-text"><strong>理由：</strong>${item.risk_summary}</div>
+          <div class="result-text"><strong>対策：</strong>${item.advice}</div>
+        </div>
+      `;
+    }
+
+    // すべてリセット処理
+    function handleReset() {
+      if (selectedConcerns.length === 0 && morningIds.length === 0 && nightIds.length === 0) return;
+      if (window.confirm("選択中のお悩みとルーティンをすべてリセットしますか？")) {
+        selectedConcerns = [];
+        morningIds = [];
+        nightIds = [];
+        activeIngredientId = null;
+        isSafeAccordionOpen = false;
+        renderAll();
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", initApp);
+  </script>
 </body>
 </html>
