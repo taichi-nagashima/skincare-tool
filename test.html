@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>データ整合性 自動検証レポート</title>
+  <title>データ＆ロジック 自動検証レポート</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       padding: 24px 16px;
       background-color: #f8fafc;
       color: #1e293b;
-      max-width: 700px;
+      max-width: 720px;
       margin: 0 auto;
     }
     h1 { font-size: 20px; margin-bottom: 8px; }
+    h2 { font-size: 16px; margin-top: 24px; margin-bottom: 12px; color: #334155; }
     .summary {
       padding: 16px;
       border-radius: 8px;
@@ -26,15 +27,15 @@
     .test-card {
       background: #ffffff;
       border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       border-left: 5px solid #cbd5e1;
     }
     .test-card.pass { border-left-color: #22c55e; }
     .test-card.fail { border-left-color: #ef4444; }
-    .test-title { font-weight: bold; font-size: 15px; margin-bottom: 6px; }
-    .test-desc { font-size: 13px; color: #64748b; margin-bottom: 8px; }
+    .test-title { font-weight: bold; font-size: 14px; margin-bottom: 4px; }
+    .test-desc { font-size: 12px; color: #64748b; }
     .status-badge {
       display: inline-block;
       padding: 2px 8px;
@@ -58,28 +59,30 @@
   </style>
 </head>
 <body>
-  <h1>データ整合性 自動検証レポート</h1>
+  <h1>データ＆判定エンジン 自動検証レポート</h1>
   <div id="summary-area" class="summary">検証スクリプトを実行中...</div>
-  <div id="test-results"></div>
+  
+  <h2>Part 1: マスターデータ整合性・薬機法チェック</h2>
+  <div id="data-test-results"></div>
 
+  <h2>Part 2: 判定エンジン（engine.js）パイプライン検証</h2>
+  <div id="logic-test-results"></div>
+
+  <script src="./engine.js"></script>
   <script>
     const NG_WORDS = ["治る", "治療", "改善する", "予防する", "絶対に", "必ず", "完治", "特効薬"];
 
     async function runTests() {
-      const resultsContainer = document.getElementById("test-results");
+      const dataContainer = document.getElementById("data-test-results");
+      const logicContainer = document.getElementById("logic-test-results");
       const summaryArea = document.getElementById("summary-area");
       let allPassed = true;
 
-      function renderTestResult(title, desc, isPass, errors = []) {
+      function renderResult(container, title, desc, isPass, errors = []) {
         if (!isPass) allPassed = false;
         const card = document.createElement("div");
         card.className = `test-card ${isPass ? "pass" : "fail"}`;
-        
-        let errorHtml = "";
-        if (errors.length > 0) {
-          errorHtml = `<div class="error-log">${errors.join("\n")}</div>`;
-        }
-
+        const errorHtml = errors.length > 0 ? `<div class="error-log">${errors.join("\n")}</div>` : "";
         card.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div class="test-title">${title}</div>
@@ -88,7 +91,7 @@
           <div class="test-desc">${desc}</div>
           ${errorHtml}
         `;
-        resultsContainer.appendChild(card);
+        container.appendChild(card);
       }
 
       try {
@@ -105,90 +108,68 @@
         const concernIds = new Set(concerns.map(c => c.id));
         const ingredientIds = new Set(ingredients.map(i => i.id));
 
-        // 1. 参照整合性チェック（rules -> ingredients）
+        // --- Part 1: データ検証 ---
         const ruleIdErrors = [];
-        rules.forEach(rule => {
-          rule.pair.forEach(id => {
-            if (!ingredientIds.has(id)) {
-              ruleIdErrors.push(`[ルールID: ${rule.id}] 未定義の成分ID "${id}" が参照されています`);
-            }
-          });
-        });
-        renderTestResult(
-          "1. 参照整合性チェック（成分ID実在検証）",
-          "rules.json の各ルールに指定されたペア成分が、ingredients.json に実在することを確認します。",
-          ruleIdErrors.length === 0,
-          ruleIdErrors
-        );
+        rules.forEach(r => r.pair.forEach(id => {
+          if (!ingredientIds.has(id)) ruleIdErrors.push(`[${r.id}] 未定義の成分ID "${id}"`);
+        }));
+        renderResult(dataContainer, "1. 参照整合性チェック", "rules.json の成分IDがすべて ingredients.json に実在すること", ruleIdErrors.length === 0, ruleIdErrors);
 
-        // 2. ペア正規化チェック（アルファベット昇順ソート）
         const pairOrderErrors = [];
-        rules.forEach(rule => {
-          if (rule.pair.length !== 2) {
-            pairOrderErrors.push(`[ルールID: ${rule.id}] pair配列の要素数は2である必要があります（現在: ${rule.pair.length}）`);
-          } else if (rule.pair[0] >= rule.pair[1]) {
-            pairOrderErrors.push(`[ルールID: ${rule.id}] pair "${rule.pair[0]}" と "${rule.pair[1]}" がアルファベット昇順になっていません（正: ["${rule.pair[1]}", "${rule.pair[0]}"]）`);
+        rules.forEach(r => {
+          if (r.pair.length !== 2 || r.pair[0] >= r.pair[1]) {
+            pairOrderErrors.push(`[${r.id}] ペア配列がアルファベット昇順になっていません`);
           }
         });
-        renderTestResult(
-          "2. ペア正規化チェック（アルファベット昇順）",
-          "ルール照合のブレを防ぐため、pair配列が辞書順で正しく並んでいることを確認します。",
-          pairOrderErrors.length === 0,
-          pairOrderErrors
-        );
+        renderResult(dataContainer, "2. ペア正規化チェック", "pair配列が辞書順（A→Z）で格納されていること", pairOrderErrors.length === 0, pairOrderErrors);
 
-        // 3. お悩み紐付け整合性チェック（ingredients -> concerns）
         const concernLinkErrors = [];
-        ingredients.forEach(item => {
-          item.target_concerns.forEach(cId => {
-            if (!concernIds.has(cId)) {
-              concernLinkErrors.push(`[成分ID: ${item.id}] 未定義のお悩みID "${cId}" が参照されています`);
-            }
-          });
-        });
-        renderTestResult(
-          "3. お悩みID参照整合性チェック",
-          "ingredients.json の target_concerns に指定されたお悩みIDが、concerns.json に実在することを確認します。",
-          concernLinkErrors.length === 0,
-          concernLinkErrors
-        );
+        ingredients.forEach(i => i.target_concerns.forEach(cId => {
+          if (!concernIds.has(cId)) concernLinkErrors.push(`[${i.id}] 未定義のお悩みID "${cId}"`);
+        }));
+        renderResult(dataContainer, "3. お悩みID参照チェック", "target_concerns がすべて concerns.json に実在すること", concernLinkErrors.length === 0, concernLinkErrors);
 
-        // 4. 薬機法NGワード検査
         const complianceErrors = [];
-        const checkText = (text, location) => {
-          NG_WORDS.forEach(word => {
-            if (text && text.includes(word)) {
-              complianceErrors.push(`[${location}] 禁止ワード "${word}" が検出されました: "${text}"`);
-            }
-          });
-        };
-
-        concerns.forEach(c => checkText(c.description, `お悩み: ${c.name}`));
-        ingredients.forEach(i => checkText(i.short_desc, `成分: ${i.name}`));
-        rules.forEach(r => {
-          checkText(r.risk_summary, `ルール: ${r.title} (リスク)`);
-          checkText(r.advice, `ルール: ${r.title} (アドバイス)`);
+        const checkText = (text, loc) => NG_WORDS.forEach(w => {
+          if (text && text.includes(w)) complianceErrors.push(`[${loc}] 禁止ワード "${w}" を検出`);
         });
+        concerns.forEach(c => checkText(c.description, c.name));
+        ingredients.forEach(i => checkText(i.short_desc, i.name));
+        rules.forEach(r => { checkText(r.risk_summary, r.id); checkText(r.advice, r.id); });
+        renderResult(dataContainer, "4. 薬機法NGワード検査", "全データ内に薬機法上の禁止表現が含まれないこと", complianceErrors.length === 0, complianceErrors);
 
-        renderTestResult(
-          "4. 薬機法・コンプライアンスNGワード検査",
-          `禁止表現（${NG_WORDS.join("、")}）がデータ内に含まれていないことを確認します。`,
-          complianceErrors.length === 0,
-          complianceErrors
-        );
+        // --- Part 2: ロジック（engine.js）単体テスト ---
+        // Test 5: 単体・朝枠紫外線リスク検知
+        const resSingle = evaluateRoutine(["retinol"], [], ingredients, rules);
+        const isSingleOk = resSingle.uiState === 2 && resSingle.overallLevel === 2 && resSingle.warnings.length === 1;
+        renderResult(logicContainer, "5. Step 1検証：朝枠の紫外線・夜専用成分アラート", "朝枠に「レチノール」を1個入れた際、State 2 かつ Level 2（単体注意）が返ること", isSingleOk, isSingleOk ? [] : ["期待値と異なる出力: " + JSON.stringify(resSingle)]);
 
-        // サマリー表示の更新
+        // Test 6: 同一枠の順不同ペア照合とLevel 3検知
+        const resPairA = evaluateRoutine([], ["retinol", "aha-bha"], ingredients, rules);
+        const resPairB = evaluateRoutine([], ["aha-bha", "retinol"], ingredients, rules);
+        const isPairOk = resPairA.overallLevel === 3 && resPairB.overallLevel === 3 && resPairA.warnings[0].id === resPairB.warnings[0].id;
+        renderResult(logicContainer, "6. Step 2/3検証：順不同ペアの正規化照合（Level 3）", "「レチノール×AHA」と「AHA×レチノール」のどちらの順序でも同一のLevel 3ルールが検出されること", isPairOk, isPairOk ? [] : ["順不同照合エラー"]);
+
+        // Test 7: 未定義ペアのLevel 1フォールバックとソート順
+        const resFallback = evaluateRoutine([], ["aha-bha", "retinol", "niacinamide"], ingredients, rules);
+        const isFallbackOk = resFallback.overallLevel === 3 && resFallback.warnings.length === 1 && resFallback.safeItems.length === 2 && resFallback.allResults[0].level === 3;
+        renderResult(logicContainer, "7. Step 5検証：未定義ペアのLevel 1フォールバック＆ソート順", "3成分投入時（3通り）、定義済みの1件がLevel 3（先頭）、未定義の2件がLevel 1（safeItems）に分類されること", isFallbackOk, isFallbackOk ? [] : ["フォールバック・ソートエラー: " + JSON.stringify(resFallback)]);
+
+        // Test 8: クロススロット（朝×夜）判定
+        const resCross = evaluateRoutine(["vitamin-c-pure"], ["retinol"], ingredients, rules);
+        const isCrossOk = resCross.uiState === 3 && resCross.overallLevel === 1 && resCross.safeItems.some(item => item.slot === "cross");
+        renderResult(logicContainer, "8. Step 4検証：クロススロット（朝ビタミンC × 夜レチノール）", "朝枠と夜枠に1つずつ入れた際、クロススロットルールが正しく検出されること", isCrossOk, isCrossOk ? [] : ["クロススロット判定エラー"]);
+
         if (allPassed) {
           summaryArea.className = "summary all-pass";
-          summaryArea.textContent = "✅ すべての自動検証を通過しました（100% PASS - ゼロ・ディフェクト）";
+          summaryArea.textContent = "✅ 全8項目の自動検証（データ＋判定エンジン）を通過しました（100% PASS）";
         } else {
           summaryArea.className = "summary has-fail";
-          summaryArea.textContent = "⚠️ 検証エラーが検出されました。エラー内容を確認してください。";
+          summaryArea.textContent = "⚠️ 検証エラーが検出されました。詳細を確認してください。";
         }
-
       } catch (e) {
         summaryArea.className = "summary has-fail";
-        summaryArea.textContent = `🚨 JSONファイルの読み込みに失敗しました: ${e.message}`;
+        summaryArea.textContent = `🚨 実行エラー: ${e.message}`;
       }
     }
 
@@ -196,3 +177,4 @@
   </script>
 </body>
 </html>
+
